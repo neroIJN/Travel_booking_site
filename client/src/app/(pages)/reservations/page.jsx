@@ -1,5 +1,5 @@
 "use client"
-import listing_image from "../../../public/assets/hr_1.jpg"
+import listing_image from '../../../../public/assets/hr_1.jpg'
 import React from 'react'
 import Card from "./Card"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"

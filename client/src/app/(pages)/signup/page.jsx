@@ -1,6 +1,6 @@
 "use client"
 import Image from 'next/image'
-import Dubai from "../../../public/assets/dubai.jpg"
+import Dubai from "../../../../public/assets/dubai.jpg"
 import React from 'react'
 import Input from '@/ui/Input'
 import Button from '@/ui/Button'
