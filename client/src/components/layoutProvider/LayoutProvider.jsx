@@ -1,19 +1,25 @@
-"use client";
-import { usePathname } from "next/navigation";
-import React from "react";
-import Navbar from "@/components/navbar/Navbar";
-import Footer from "@/components/footer/Footer";
+"use client"
+import { usePathname } from 'next/navigation'
+import React from 'react'
+import Navbar from '../navbar/Navbar'
+import Footer from '../footer/Footer'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
-export const LayoutProvider = ({ children }) => {
-  const pathname = usePathname();
+const LayoutProvider = ({
+  children
+}) => {
+  const queryClient = new QueryClient()
+  const pathname = usePathname()
 
   return (
     <>
-      {pathname !== "/login" && pathname !== "/signup" && <Navbar />}
-      {children}
-      {pathname !== "/login" && pathname !== "/signup" && <Footer />}
+      <QueryClientProvider client={queryClient}>
+        {pathname !== "/login" && pathname !== "/signup" && !pathname.includes("/admin") && <Navbar />}
+        {children}
+        {pathname !== "/login" && pathname !== "/signup" && !pathname.includes("/admin") && <Footer />}
+      </QueryClientProvider>
     </>
-  );
-};
+  )
+}
 
-export default LayoutProvider;
+export default LayoutProvider
