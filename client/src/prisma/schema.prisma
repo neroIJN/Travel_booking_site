@@ -1,12 +1,16 @@
+// Prisma Client generator configuration
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
 }
 
+// MongoDB database connection
 datasource db {
   provider = "mongodb"
   url      = env("DATABASE_URL")
 }
 
+// User model definition
 model User {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   username  String   @unique
@@ -16,51 +20,61 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  // Relations
   reservations Reservation[]
   reviews      Review[]
 }
 
+// Listing model definition
 model Listing {
-  id           String   @id @default(auto()) @map("_id") @db.ObjectId
-  name         String
-  location     String
-  type         String
-  desc         String
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  location      String
+  type          String
+  desc          String
   pricePerNight Float
-  beds         Int
-  hasFreeWifi  Boolean
-  imageUrls    String[]
+  beds          Int
+  hasFreeWifi   Boolean
+  imageUrls     String[]
 
+  // Relations
   reviews      Review[]
   reservations Reservation[]
 }
 
+// Reservation model definition
 model Reservation {
-  id            String   @id @default(auto()) @map("_id") @db.ObjectId
-  startDate     DateTime
-  endDate       DateTime
-  chargeId      String
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  startDate      DateTime
+  endDate        DateTime
+  chargeId       String
   daysDifference Int
-  reservedDates Int[]    @default([])
+  reservedDates  Int[]    @default([])
 
-  listingId     String   @db.ObjectId
-  userId        String   @db.ObjectId
+  // Foreign keys
+  listingId      String   @db.ObjectId
+  userId         String   @db.ObjectId
 
-  listing       Listing  @relation(fields: [listingId], references: [id], onDelete: Cascade)
-  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // Relations
+  listing        Listing  @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+// Review model definition
 model Review {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   text      String
   stars     Int
 
+  // Foreign keys
   listingId String   @db.ObjectId
   userId    String   @db.ObjectId
 
+  // Timestamps
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  // Relations
   listing   Listing  @relation(fields: [listingId], references: [id], onDelete: Cascade)
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
