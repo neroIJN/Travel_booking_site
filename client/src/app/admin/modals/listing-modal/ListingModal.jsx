@@ -34,8 +34,6 @@ const ListingModal = ({
         mutationFn: ({ listingId, body }) => updateListing({ listingId, body }),
     })
 
-    console.log(listing)
-
     const {
         register,
         handleSubmit,
@@ -53,22 +51,15 @@ const ListingModal = ({
         }
     }, [errors])
 
+    // Fixed useEffect with proper dependencies
     useEffect(() => {
-        reset({ ...listing })
-    }, [
-        listing?.name,
-        listing?.desc,
-        listing?.beds,
-        listing?.type,
-        listing?.hasFreeWifi,
-        listing?.location,
-        listing?.pricePerNight
-    ])
+        if (listing) {
+            reset(listing)
+        }
+    }, [listing, reset])
 
     const handleImage = (e) => {
-        setImages(prev => {
-            return [...prev, e.target.files[0]]
-        })
+        setImages(prev => [...prev, e.target.files[0]])
     }
 
     const uploadImage = async (image, idx) => {

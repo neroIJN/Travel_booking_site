@@ -15,6 +15,7 @@ const Card = ({
                     className="rounded-xl shadow-xl"
                     height="200"
                     width="300"
+                    alt='Listing image'
                 />
             </Link>
             <div className="p-2 mt-2 flex flex-col gap-4">

@@ -16,6 +16,7 @@ const Review = ({
                     width="56"
                     className="w-full h-full object-cover rounded-full"
                     src={person_image}
+                    alt="Person image"
                 />
             </div>
             <div>

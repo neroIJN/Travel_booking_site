@@ -7,6 +7,40 @@ import { useState } from "react"
 import { useListingHook } from "@/app/admin/hooks/listing-hook"
 import ListingModal from "@/app/admin/modals/listing-modal/ListingModal"
 
+// Create separate components for cells that use hooks
+const ActionCell = ({ row }) => {
+    const listingId = row.original.id
+    const [showModal, setShowModal] = useState(false)
+    const { handleDeleteListing, isPending } = useListingHook()
+    
+    const handleHideModal = () => setShowModal(false)
+    const handleShowModal = () => setShowModal(true)
+
+    return (
+        <>
+            <button
+                onClick={() => handleDeleteListing(listingId)}
+                disabled={isPending}
+                className="cursor-pointer px-2 py-1 rounded-xl"
+            >
+                <FaTrash color={`${isPending ? "#bdb2b2" : "#f00"}`} />
+            </button>
+            <button
+                onClick={handleShowModal}
+                className="cursor-pointer disabled:bg-slate-200 px-2 py-1 rounded-xl"
+            >
+                <FaPen color="#31b608" />
+            </button>
+            {showModal && (
+                <ListingModal
+                    handleHideModal={handleHideModal}
+                    listingId={listingId}
+                />
+            )}
+        </>
+    )
+}
+
 export const columns = [
     {
         accessorKey: "image",
@@ -73,41 +107,6 @@ export const columns = [
     {
         accessorKey: "actions",
         header: "Actions",
-        cell: ({ row }) => {
-            const listingId = row.original.id
-            const [showModal, setShowModal] = useState(false)
-
-            const { handleDeleteListing, isPending } = useListingHook()
-            const handleHideModal = () => setShowModal(false)
-            const handleShowModal = () => setShowModal(true)
-
-            return (
-                <>
-                    <button
-                        onClick={() => handleDeleteListing(listingId)}
-                        disabled={isPending}
-                        className="cursor-pointer px-2 py-1 rounded-xl"
-                    >
-                        <FaTrash
-                            color={`${isPending ? "#bdb2b2" : "#f00"}`}
-                        />
-                    </button>
-                    <button
-                        onClick={handleShowModal}
-                        className="cursor-pointer disabled:bg-slate-200 px-2 py-1 rounded-xl"
-                    >
-                        <FaPen
-                            color="#31b608"
-                        />
-                    </button>
-                    {showModal && (
-                        <ListingModal
-                            handleHideModal={handleHideModal}
-                            listingId={listingId}
-                        />
-                    )}
-                </>
-            )
-        }
+        cell: ActionCell // Use the component directly
     },
 ]

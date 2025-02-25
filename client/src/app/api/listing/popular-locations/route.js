@@ -5,7 +5,7 @@ import Hamburg from "../../../../../public/assets/Hamburg.jpg"
 import Paris from "../../../../../public/assets/paris.jpg"
 import St_tropez from "../../../../../public/assets/StTropez.jpg"
 import Mumbai from "../../../../../public/assets/Mumbai.jpg"
-import Delhi from "../../../../../public/assets/Delhi.jpg"
+import Delhi from "../../../../../public/assets/delhi.jpg"
 import db from "@/lib/db"
 import { NextResponse } from "next/server"
 

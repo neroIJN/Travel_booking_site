@@ -73,6 +73,7 @@ const HotelDetails = (ctx) => {
                       src={imageUrl}
                       blurDataURL={listing.blurredImage}
                       placeholder="blur"
+                      alt="Property detail image"
                     />
                   </swiper-slide>
                 ))}
