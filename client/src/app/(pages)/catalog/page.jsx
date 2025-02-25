@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect } from 'react'
+import React, { Suspense, useEffect } from 'react'
 import Select from '@/ui/Select'
 import { optionLocations, optionTypes } from '@/data/data'
 import Input from '@/ui/Input'
@@ -14,7 +14,8 @@ import { getFilteredListings } from "./service"
 import Image from "next/image"
 import { toast } from 'react-hot-toast'
 
-const Catalog = () => {
+// Separate component for the catalog content
+const CatalogContent = () => {
   const searchParams = useSearchParams()
 
   const city = searchParams.get("city")
@@ -23,13 +24,12 @@ const Catalog = () => {
   const type = searchParams.get("type")
   const router = useRouter()
 
+  const locationData = optionLocations.find(location => location.value === city)
   const {
     city: city_name,
     value,
     image
-  } = optionLocations.find(location => location.value === city)
-
-  console.log(city_name, value, image)
+  } = locationData || optionLocations[0] // Provide fallback default
 
   const defaultValues = {
     location: value,
@@ -66,14 +66,10 @@ const Catalog = () => {
 
   const onSubmit = async (data) => {
     await getFilteredListings(data)
-
     queryClient.invalidateQueries(["listings"])
-
     const newUrl = `/catalog?city=${data.location}&min_price=${data.min_price}&max_price=${data.max_price}&type=${data.type}`
-
     router.push(newUrl, { scroll: false })
   }
-
 
   return (
     <div className="min-h-screen w-full">
@@ -81,19 +77,16 @@ const Catalog = () => {
         <Image
           src={image}
           className="brightness-50 h-screen w-full object-cover"
+          alt="Catalog listing image"
         />
-        <h3
-          className="absolute text-6xl capitalize font-semibold flex items-center justify-center bottom-0 left-0 right-0 top-0 text-white"
-        >
+        <h3 className="absolute text-6xl capitalize font-semibold flex items-center justify-center bottom-0 left-0 right-0 top-0 text-white">
           {city_name}
         </h3>
       </div>
       <div className="relative z-20 -mt-12 h-full w-full flex flex-col items-center">
         <form onSubmit={handleSubmit(onSubmit)} className="border w-2/3 h-28 border-slate-500 px-4 py-12 rounded-xl bg-blue-600 text-white flex justify-between items-center">
           <div className="flex flex-col items-center gap-1">
-            <h3 className="ml-1 text-[#efefef] font-semibold">
-              City
-            </h3>
+            <h3 className="ml-1 text-[#efefef] font-semibold">City</h3>
             <Select
               register={register("location")}
               data={optionLocations}
@@ -101,9 +94,7 @@ const Catalog = () => {
             />
           </div>
           <div className="flex flex-col items-center gap-1">
-            <h3 className="ml-1 text-[#efefef] font-semibold">
-              Price
-            </h3>
+            <h3 className="ml-1 text-[#efefef] font-semibold">Price</h3>
             <div className="flex items-center gap-2">
               <Input
                 register={register("min_price", { valueAsNumber: true })}
@@ -120,9 +111,7 @@ const Catalog = () => {
             </div>
           </div>
           <div className="flex flex-col items-start gap-1">
-            <h3 className="ml-1 text-[#efefef] font-semibold">
-              Type of hotel
-            </h3>
+            <h3 className="ml-1 text-[#efefef] font-semibold">Type of hotel</h3>
             <Select
               register={register("type")}
               data={optionTypes}
@@ -145,6 +134,19 @@ const Catalog = () => {
         </div>
       </div>
     </div>
+  )
+}
+
+// Main component wrapped in Suspense
+const Catalog = () => {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen w-full flex items-center justify-center">
+        <h2 className="text-2xl font-semibold text-slate-700">Loading...</h2>
+      </div>
+    }>
+      <CatalogContent />
+    </Suspense>
   )
 }
 

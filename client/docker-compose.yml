@@ -1,37 +1,24 @@
+version: '3.8'
+
 services:
-  mongo:
-    image: mongo:latest
-    container_name: mongo_container
-    volumes:
-      - mongo_data:/data/db
-    ports:
-      - "27017:27017"
-
-  api:
-    build: ./api
-    container_name: api_container
-    ports:
-      - "5000:5000"
-    depends_on:
-      - mongo
-    volumes:
-      - ./api:/app
-      - /app/node_modules
-    environment:
-      - MONGO_URL=mongodb://mongo:27017/auth
-
   client:
-    build: ./client
-    container_name: client_container
+    build:
+      context: ./client
+      dockerfile: Dockerfile.client
     ports:
       - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=mongodb+srv://janithniroshan961:m1DXsoNBWrxKwALP@cluster0.6xoem.mongodb.net/test
     depends_on:
-      - api
-    stdin_open: true
-    tty: true
-    volumes:
-      - ./client:/app
-      - /client/node_modules
+      - backend
 
-volumes:
-  mongo_data:
+  backend:
+    build:
+      context: ./client
+      dockerfile: Dockerfile.backend
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=mongodb+srv://janithniroshan961:m1DXsoNBWrxKwALP@cluster0.6xoem.mongodb.net/test

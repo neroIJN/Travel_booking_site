@@ -48,6 +48,7 @@ const SignUp = () => {
         <Image
           src={Dubai}
           className="brightness-50 h-full w-full object-cover"
+          alt='Dubai'
         />
         <div
           className="h-[450px] w-[400px] bg-white absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-lg"

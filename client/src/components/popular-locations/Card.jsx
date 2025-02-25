@@ -14,6 +14,7 @@ const Card = ({
                 <Image
                     src={place.image}
                     className="h-full w-full overflow-hidden rounded-tl-xl rounded-tr-xl object-cover"
+                    alt='Place image'
                 />
                 <div className="absolute right-0 bottom-0 capitalize p-4 bg-blue-700 text-white rounded-tl-xl font-semibold">
                     {place.value}

@@ -5,6 +5,23 @@ import { AiOutlineArrowDown, AiOutlineArrowUp } from 'react-icons/ai'
 import { useReservationHook } from '@/app/admin/hooks/reservation-hook'
 import React from 'react'
 
+// Create separate component for action cell
+const ActionCell = ({ row }) => {
+    const { chargeId, id: reservationId } = row.original
+    const { handleDeleteReservation, isPending } = useReservationHook()
+
+    return (
+        <>
+            <button
+                onClick={() => handleDeleteReservation({ chargeId, reservationId })}
+                className="cursor-pointer disabled:bg-slate-200 px-2 py-1 rounded-xl"
+            >
+                <FaTrash color={`${isPending ? "#bdb2b2" : "#f00"}`} />
+            </button>
+        </>
+    )
+}
+
 export const columns = [
     {
         accessorKey: "image",
@@ -19,6 +36,7 @@ export const columns = [
                         width="35"
                         height="35"
                         className="rounded-full object-cover"
+                        alt="Reservation listing thumbnail"
                     />
                 </div>
             )
@@ -97,24 +115,6 @@ export const columns = [
     {
         accessorKey: "actions",
         header: "Actions",
-        cell: ({ row }) => {
-            const { chargeId, id: reservationId } = row.original
-
-            const {
-                handleDeleteReservation,
-                isPending
-            } = useReservationHook()
-
-            return (
-                <>
-                    <button
-                        onClick={() => handleDeleteReservation({ chargeId, reservationId })}
-                        className="cursor-pointer disabled:bg-slate-200 px-2 py-1 rounded-xl"
-                    >
-                        <FaTrash color={`${isPending ? "#bdb2b2" : "#f00"}`} />
-                    </button>
-                </>
-            )
-        }
+        cell: ActionCell
     },
 ]

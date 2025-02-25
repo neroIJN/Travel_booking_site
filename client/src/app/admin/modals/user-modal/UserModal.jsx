@@ -1,4 +1,5 @@
 "use client"
+
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import React, { useEffect } from 'react'
@@ -14,11 +15,22 @@ const UserModal = ({
     userId,
     handleHideModal
 }) => {
+    const {
+        register,
+        handleSubmit,
+        reset
+    } = useForm({
+        resolver: zodResolver(schema)
+    })
+
     const { data: user, isPending } = useQuery({
         queryFn: () => getUserById(userId),
         queryKey: ["admin", "users", { userId }],
-        onSuccess: () => {
-            reset({ username: user.username, email: user.email })
+        onSuccess: (data) => {
+            reset({ 
+                username: data.username, 
+                email: data.email 
+            })
         }
     })
 
@@ -33,26 +45,19 @@ const UserModal = ({
         }
     })
 
-    const {
-        register,
-        handleSubmit,
-        reset
-    } = useForm({
-        resolver: zodResolver(schema)
-    })
-
     useEffect(() => {
-        reset({
-            username: user?.username,
-            email: user?.email
-        })
-    }, [user?.username, user?.email])
+        if (user) {
+            reset({
+                username: user.username,
+                email: user.email
+            })
+        }
+    }, [user, reset])
 
     const onSubmit = (data) => {
         handleUpdateUser({ userId, data })
         handleHideModal()
     }
-
 
     return (
         <ModalLayout
