@@ -5,9 +5,42 @@ import { format } from 'timeago.js'
 import { FaPen, FaTrash } from "react-icons/fa"
 import { useUserHook } from "../../../hooks/user-hook"
 import { AiOutlineArrowDown, AiOutlineArrowUp } from 'react-icons/ai'
-// import UserModal 
 import React, { useState } from 'react'
 import UserModal from '@/app/admin/modals/user-modal/UserModal'
+
+// Create separate component for action cell
+const ActionCell = ({ row }) => {
+    const { id: userId } = row.original
+    const [showModal, setShowModal] = useState(false)
+    const { handleDeleteUser, isPending } = useUserHook()
+
+    const handleHideModal = () => setShowModal(false)
+    const handleShowModal = () => setShowModal(true)
+
+    return (
+        <>
+            <button
+                className="cursor-pointer disabled:bg-slate-200 px-2 py-1 rounded-xl"
+                disabled={isPending}
+                onClick={() => handleDeleteUser(userId)}
+            >
+                <FaTrash color={`${isPending ? "#bdb2b2" : "#f00"}`} />
+            </button>
+            <button
+                onClick={handleShowModal}
+                className="cursor-pointer disabled:bg-slate-200 px-2 py-1 rounded-xl"
+            >
+                <FaPen color="#31b608" />
+            </button>
+            {showModal && (
+                <UserModal
+                    userId={userId}
+                    handleHideModal={handleHideModal}
+                />
+            )}
+        </>
+    )
+}
 
 export const columns = [
     {
@@ -51,7 +84,7 @@ export const columns = [
         header: ({ column }) => {
             return (
                 <button
-                    className="Flex items-center gap-1"
+                    className="flex items-center gap-1"
                     onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
                 >
                     Reservations
@@ -87,38 +120,6 @@ export const columns = [
     {
         accessorKey: "actions",
         header: "Actions",
-        cell: ({ row }) => {
-            const { id: userId } = row.original
-            const [showModal, setShowModal] = useState(false)
-
-            const handleHideModal = () => setShowModal(false)
-            const handleShowModal = () => setShowModal(true)
-
-            const { handleDeleteUser, isPending } = useUserHook()
-
-            return (
-                <>
-                    <button
-                        className="cursor-pointer disabled:bg-slate-200 px-2 py-1 rounded-xl"
-                        disabled={isPending}
-                        onClick={() => handleDeleteUser(userId)}
-                    >
-                        <FaTrash color={`${isPending ? "#bdb2b2" : "#f00"}`} />
-                    </button>
-                    <button
-                        onClick={handleShowModal}
-                        className="cursor-pointer disabled:bg-slate-200 px-2 py-1 rounded-xl"
-                    >
-                        <FaPen color="#31b608" />
-                    </button>
-                    {showModal && (
-                        <UserModal
-                            userId={userId}
-                            handleHideModal={handleHideModal}
-                        />
-                    )}
-                </>
-            )
-        }
+        cell: ActionCell // Use the component directly
     },
 ]

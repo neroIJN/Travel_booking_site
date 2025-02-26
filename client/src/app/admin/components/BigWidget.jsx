@@ -21,6 +21,7 @@ const BigWidget = ({
             height="300"
             blurDataURL={listing?.blurredImage}
             placeholder="blur"
+            alt='Listing image'
           />
           <div className="p-6 flex flex-col gap-8">
             <h3 className="mt-4 font-bold text-slate-700 text-2xl">

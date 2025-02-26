@@ -9,7 +9,7 @@ const Hero = ({
   return (
     <div>
       <div className="relative h-screen w-full">
-        <Image src={image} className="brightness-50 h-full w-full object-cover"/>
+        <Image src={image} className="brightness-50 h-full w-full object-cover" alt='image'/>
         <div
           className="absolute bottom-0 left-0 right-0 top-0 flex flex-col justify-center items-center gap-8"
         >
