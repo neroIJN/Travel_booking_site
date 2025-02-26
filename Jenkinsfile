@@ -1,11 +1,18 @@
 pipeline {
     agent any 
-    
+
     stages { 
         stage('SCM Checkout') {
             steps {
-                retry(3) {
-                    git branch: 'main', url: 'https://github.com/neroIJN/Travel_booking_site'
+                script {
+                    try {
+                        retry(3) {
+                            git branch: 'main', url: 'https://github.com/neroIJN/Travel_booking_site'
+                        }
+                    } catch (Exception e) {
+                        echo "Git checkout failed after 3 attempts."
+                        error("Stopping pipeline.")
+                    }
                 }
                 // Debugging: List files in the workspace
                 bat "dir /s"
@@ -13,7 +20,7 @@ pipeline {
         }
         stage('Build Docker Image') {
             steps {  
-                dir('movie-app') { // Navigate to the movie-app directory
+                script {
                     bat "docker build -t itznero/next-travel:${BUILD_NUMBER} ."
                 }
             }
@@ -21,7 +28,12 @@ pipeline {
         stage('Login to Docker Hub') {
             steps {
                 withCredentials([string(credentialsId: 'Docker_hub', variable: 'test_docker')]) {
-                    bat "docker login -u itznero -p %test_docker%"
+                    script {
+                        def loginStatus = bat(returnStatus: true, script: "docker login -u itznero -p '%test_docker%'")
+                        if (loginStatus != 0) {
+                            error("Docker login failed! Stopping pipeline.")
+                        }
+                    }
                 }
             }
         }
